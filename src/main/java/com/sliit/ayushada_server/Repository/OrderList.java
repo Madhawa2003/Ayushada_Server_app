@@ -5,17 +5,18 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class Prescription {
+@Table(name = "order_list", schema = "se_proj_v2", catalog = "")
+public class OrderList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private int id;
-    @Basic
-    @Column(name = "image")
-    private String image;
     @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
     private Order order;
+    @ManyToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
+    private Product product;
 
     public int getId() {
         return id;
@@ -25,25 +26,17 @@ public class Prescription {
         this.id = id;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Prescription that = (Prescription) o;
-        return id == that.id && Objects.equals(image, that.image);
+        OrderList orderList = (OrderList) o;
+        return id == orderList.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, image);
+        return Objects.hash(id);
     }
 
     public Order getOrder() {
@@ -52,5 +45,13 @@ public class Prescription {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }
