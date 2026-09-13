@@ -1,6 +1,8 @@
 package com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management;
+import com.sliit.ayushada_server.Entity.SupplierLogs;
 import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Dto.SupplieGetDto;
 import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Dto.SupplierCreateDto;
+import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Dto.SupplierOrderRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,4 +29,8 @@ public class SapmController {
         return sapmService.getSupplier(id);
     }
 
+    @PostMapping("/new-order")
+    public SupplierLogs neworder(@RequestBody SupplierOrderRequest supplierOrderRequest) {
+        return sapmService.addSupplierOrder(supplierOrderRequest);
+    }
 }

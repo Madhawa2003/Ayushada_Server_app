@@ -2,6 +2,7 @@ package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -34,7 +35,7 @@ public class SupplierLogs {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
