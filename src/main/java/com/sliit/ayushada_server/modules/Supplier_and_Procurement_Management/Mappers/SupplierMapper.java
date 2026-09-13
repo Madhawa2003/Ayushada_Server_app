@@ -1,6 +1,6 @@
 package com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Mappers;
 
-import com.sliit.ayushada_server.Repository.Supplier;
+import com.sliit.ayushada_server.Entity.Supplier;
 import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Dto.SupplieGetDto;
 import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Dto.SupplierCreateDto;
 import org.springframework.stereotype.Component;

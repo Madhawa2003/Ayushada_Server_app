@@ -1,19 +1,19 @@
-package com.sliit.ayushada_server.Repository;
+package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity
-@Table(name = "orderrequestsproductlist", schema = "se_proj_v2", catalog = "")
-public class OrderReqProduct {
+@Table(name = "order_list", schema = "se_proj_v2", catalog = "")
+public class OrderList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private int id;
     @ManyToOne
-    @JoinColumn(name = "orderRequests_id", referencedColumnName = "id", nullable = false)
-    private Orderrequests orderrequests;
+    @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
+    private Order order;
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     private Product product;
@@ -30,8 +30,8 @@ public class OrderReqProduct {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrderReqProduct that = (OrderReqProduct) o;
-        return id == that.id;
+        OrderList orderList = (OrderList) o;
+        return id == orderList.id;
     }
 
     @Override
@@ -39,12 +39,12 @@ public class OrderReqProduct {
         return Objects.hash(id);
     }
 
-    public Orderrequests getOrderrequests() {
-        return orderrequests;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderrequests(Orderrequests orderrequests) {
-        this.orderrequests = orderrequests;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Product getProduct() {

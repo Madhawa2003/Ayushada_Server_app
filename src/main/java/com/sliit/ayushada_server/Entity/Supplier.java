@@ -1,4 +1,4 @@
-package com.sliit.ayushada_server.Repository;
+package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

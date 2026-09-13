@@ -1,4 +1,4 @@
-package com.sliit.ayushada_server.Repository;
+package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
 
@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "payment_type", schema = "se_proj_v2", catalog = "")
-public class PaymentType {
+@Table(name = "product_type", schema = "se_proj_v2", catalog = "")
+public class ProductType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -15,8 +15,8 @@ public class PaymentType {
     @Basic
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "paymentType")
-    private Collection<Order> orders;
+    @OneToMany(mappedBy = "productType")
+    private Collection<Product> products;
 
     public int getId() {
         return id;
@@ -38,7 +38,7 @@ public class PaymentType {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PaymentType that = (PaymentType) o;
+        ProductType that = (ProductType) o;
         return id == that.id && Objects.equals(name, that.name);
     }
 
@@ -47,11 +47,11 @@ public class PaymentType {
         return Objects.hash(id, name);
     }
 
-    public Collection<Order> getOrders() {
-        return orders;
+    public Collection<Product> getProducts() {
+        return products;
     }
 
-    public void setOrders(Collection<Order> orders) {
-        this.orders = orders;
+    public void setProducts(Collection<Product> products) {
+        this.products = products;
     }
 }
