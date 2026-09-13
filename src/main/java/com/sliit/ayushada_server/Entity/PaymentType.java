@@ -1,4 +1,4 @@
-package com.sliit.ayushada_server.Repository;
+package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
 
@@ -6,7 +6,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-public class Role {
+@Table(name = "payment_type", schema = "se_proj_v2", catalog = "")
+public class PaymentType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -14,8 +15,8 @@ public class Role {
     @Basic
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "role")
-    private Collection<User> users;
+    @OneToMany(mappedBy = "paymentType")
+    private Collection<Order> orders;
 
     public int getId() {
         return id;
@@ -37,8 +38,8 @@ public class Role {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return id == role.id && Objects.equals(name, role.name);
+        PaymentType that = (PaymentType) o;
+        return id == that.id && Objects.equals(name, that.name);
     }
 
     @Override
@@ -46,11 +47,11 @@ public class Role {
         return Objects.hash(id, name);
     }
 
-    public Collection<User> getUsers() {
-        return users;
+    public Collection<Order> getOrders() {
+        return orders;
     }
 
-    public void setUsers(Collection<User> users) {
-        this.users = users;
+    public void setOrders(Collection<Order> orders) {
+        this.orders = orders;
     }
 }
