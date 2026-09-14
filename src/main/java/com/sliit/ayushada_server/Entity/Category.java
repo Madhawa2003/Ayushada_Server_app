@@ -9,21 +9,21 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "role")
-public class Role {
+@Table(name = "category")
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Size(max = 50)
+    @Size(max = 100)
     @NotNull
-    @Column(name = "name", nullable = false, length = 50)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Size(max = 100)
-    @Column(name = "access_type", length = 100)
-    private String accessType;
+    @Lob
+    @Column(name = "description")
+    private String description;
 
 
 }

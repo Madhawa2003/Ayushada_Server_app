@@ -6,30 +6,26 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "prescription")
-public class Prescription {
+@Table(name = "payment")
+public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Size(max = 255)
     @NotNull
-    @Column(name = "document_url", nullable = false)
-    private String documentUrl;
+    @Column(name = "date", nullable = false)
+    private Instant date;
 
     @NotNull
-    @Column(name = "upload_at", nullable = false)
-    private Instant uploadAt;
-
-    @Lob
-    @Column(name = "note")
-    private String note;
+    @Column(name = "amount", nullable = false, precision = 10, scale = 2)
+    private BigDecimal amount;
 
     @Size(max = 50)
     @NotNull
@@ -37,8 +33,12 @@ public class Prescription {
     private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "invoice_id")
+    private Invoice invoice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pay_type_id")
+    private PayType payType;
 
 
 }
