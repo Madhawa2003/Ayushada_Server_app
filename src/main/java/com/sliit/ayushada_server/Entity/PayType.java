@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "role")
-public class Role {
+@Table(name = "pay_type")
+public class PayType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -21,9 +21,9 @@ public class Role {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @Size(max = 100)
-    @Column(name = "access_type", length = 100)
-    private String accessType;
+    @Lob
+    @Column(name = "description")
+    private String description;
 
 
 }

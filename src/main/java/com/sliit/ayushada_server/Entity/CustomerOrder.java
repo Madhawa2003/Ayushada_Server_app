@@ -11,34 +11,37 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "prescription")
-public class Prescription {
+@Table(name = "customer_order")
+public class CustomerOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Size(max = 255)
     @NotNull
-    @Column(name = "document_url", nullable = false)
-    private String documentUrl;
-
-    @NotNull
-    @Column(name = "upload_at", nullable = false)
-    private Instant uploadAt;
-
-    @Lob
-    @Column(name = "note")
-    private String note;
+    @Column(name = "order_date", nullable = false)
+    private Instant orderDate;
 
     @Size(max = 50)
     @NotNull
     @Column(name = "status", nullable = false, length = 50)
     private String status;
 
+    @Lob
+    @Column(name = "shipping_address")
+    private String shippingAddress;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "prescription_id")
+    private Prescription prescription;
+
+    @Size(max = 100)
+    @Column(name = "assigned_to", length = 100)
+    private String assignedTo;
 
 
 }

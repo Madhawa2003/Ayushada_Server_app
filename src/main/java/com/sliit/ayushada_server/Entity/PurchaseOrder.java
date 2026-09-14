@@ -7,38 +7,32 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "prescription")
-public class Prescription {
+@Table(name = "purchase_order")
+public class PurchaseOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Size(max = 255)
     @NotNull
-    @Column(name = "document_url", nullable = false)
-    private String documentUrl;
+    @Column(name = "order_date", nullable = false)
+    private Instant orderDate;
 
-    @NotNull
-    @Column(name = "upload_at", nullable = false)
-    private Instant uploadAt;
-
-    @Lob
-    @Column(name = "note")
-    private String note;
+    @Column(name = "expected_date")
+    private LocalDate expectedDate;
 
     @Size(max = 50)
-    @NotNull
-    @Column(name = "status", nullable = false, length = 50)
+    @Column(name = "status", length = 50)
     private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier;
 
 
 }

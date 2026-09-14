@@ -1,84 +1,69 @@
 package com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management;
 
-import com.sliit.ayushada_server.Entity.Product;
+
+import com.sliit.ayushada_server.Entity.PurchaseOrder;
 import com.sliit.ayushada_server.Entity.Supplier;
-import com.sliit.ayushada_server.Entity.SupplierLogs;
-import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Dto.SupplieGetDto;
-import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Dto.SupplierCreateDto;
-import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Dto.SupplierOrderRequest;
 import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Exeption.InvalidSupplierException;
-import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Exeption.ResourceNotFoundException;
-import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Mappers.SupplierMapper;
-import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Repositories.ProductRepository;
-import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Repositories.SupplierLogsRepository;
+import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Repositories.PurchaseOrderRepository;
 import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Repositories.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class SapmService {
 
     @Autowired
-    ProductRepository productRepository;
+    SupplierRepository supplierRepository;
     @Autowired
-    SupplierLogsRepository supplierLogsRepository;
+    PurchaseOrderRepository orderRepository;
 
 
-    private final SupplierRepository supplierRepository;
-    private final SupplierMapper supplierMapper;
-
-    public SapmService(SupplierRepository supplierRepository, SupplierMapper supplierMapper) {
+    public SapmService(SupplierRepository supplierRepository, PurchaseOrderRepository orderRepository) {
         this.supplierRepository = supplierRepository;
-        this.supplierMapper = supplierMapper;
+        this.orderRepository = orderRepository;
     }
 
-    @Transactional
-    public SupplieGetDto addSupplier(SupplierCreateDto supplierDto) {
-        if (supplierDto == null) {
-            throw new InvalidSupplierException("Supplier details must not be null.");
-        }
-        if (supplierDto.getName() == null || supplierDto.getName().trim().isEmpty()) {
-            throw new InvalidSupplierException("Supplier name is required.");
-        }
-
-        Supplier supplier = supplierMapper.toEntity(supplierDto);
-        Supplier savedSupplier = supplierRepository.save(supplier);
-        return supplierMapper.toGetDto(savedSupplier);
+    public Supplier addSupplier(Supplier supplier) {
+        return supplierRepository.save(supplier);
     }
 
-    public SupplieGetDto getSupplier(int supplierId) {
-        return supplierRepository.findById(supplierId)
-                .map(supplierMapper::toGetDto)
-                .orElseThrow(() -> new InvalidSupplierException("Supplier with ID " + supplierId + " not found."));
+    public Supplier updateSupplier(Supplier supplier) {
+        // Retrieve the existing supplier from the database
+        Supplier existingSupplier = supplierRepository.findById(Math.toIntExact(supplier.getId()))
+                .orElseThrow(() -> new InvalidSupplierException("Supplier not found with ID: " + supplier.getId()));
+
+        // Update the fields with the new data
+        existingSupplier.setCompanyName(supplier.getCompanyName());
+        existingSupplier.setPersonName(supplier.getPersonName());
+        existingSupplier.setEmail(supplier.getEmail());
+        existingSupplier.setPhoneNo(supplier.getPhoneNo());
+        existingSupplier.setAddress(supplier.getAddress());
+        existingSupplier.setActiveStatus(supplier.getActiveStatus());
+
+        // Save and return the updated entity
+        return supplierRepository.save(existingSupplier);
     }
 
-    public List<SupplieGetDto> getAllSuppliers() {
-        return supplierRepository.findAll()
-                .stream()
-                .map(supplierMapper::toGetDto)
-                .collect(Collectors.toList());
+
+
+    public List<Supplier> getAllSuppliers() {
+        return supplierRepository.findAll();
     }
 
-    public SupplierLogs addSupplierOrder(SupplierOrderRequest request) {
-        Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + request.getProductId()));
+    public PurchaseOrder issuePurchaseOrder(PurchaseOrder request) {
+        Supplier supplier = supplierRepository.findById(Math.toIntExact(request.getSupplier().getId()))
+                .orElseThrow(() -> new InvalidSupplierException("Supplier not found"));
 
-        Supplier supplier = supplierRepository.findById(request.getSupplierId())
-                .orElseThrow(() -> new InvalidSupplierException("Supplier not found with ID: " + request.getSupplierId()));
-
-        SupplierLogs newOrderLog = new SupplierLogs();
-        newOrderLog.setProduct(product);
-        newOrderLog.setSupplier(supplier);
-
-        // Wrapped the long value in java.sql.Date to resolve the type mismatch
-        newOrderLog.setDate(new java.sql.Date(System.currentTimeMillis()));
-
-        return supplierLogsRepository.save(newOrderLog);
+        request.setSupplier(supplier);
+        request.setOrderDate(Instant.from(LocalDateTime.now()));
+        request.setStatus("PENDING");
+        return orderRepository.save(request);
     }
 
 
