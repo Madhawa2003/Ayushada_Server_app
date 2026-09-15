@@ -1,56 +1,44 @@
 package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Objects;
+import java.time.Instant;
 
+@Getter
+@Setter
 @Entity
+@Table(name = "prescription")
 public class Prescription {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
-    private int id;
-    @Basic
-    @Column(name = "image")
-    private String image;
-    @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
-    private Order order;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
-    public int getId() {
-        return id;
-    }
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "document_url", nullable = false)
+    private String documentUrl;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    @NotNull
+    @Column(name = "upload_at", nullable = false)
+    private Instant uploadAt;
 
-    public String getImage() {
-        return image;
-    }
+    @Lob
+    @Column(name = "note")
+    private String note;
 
-    public void setImage(String image) {
-        this.image = image;
-    }
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "status", nullable = false, length = 50)
+    private String status;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Prescription that = (Prescription) o;
-        return id == that.id && Objects.equals(image, that.image);
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, image);
-    }
 
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 }

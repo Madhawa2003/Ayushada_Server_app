@@ -1,56 +1,29 @@
 package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Collection;
-import java.util.Objects;
-
+@Getter
+@Setter
 @Entity
+@Table(name = "role")
 public class Role {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
-    private int id;
-    @Basic
-    @Column(name = "name")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
-    @OneToMany(mappedBy = "role")
-    private Collection<User> users;
 
-    public int getId() {
-        return id;
-    }
+    @Size(max = 100)
+    @Column(name = "access_type", length = 100)
+    private String accessType;
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return id == role.id && Objects.equals(name, role.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
-
-    public Collection<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Collection<User> users) {
-        this.users = users;
-    }
 }
