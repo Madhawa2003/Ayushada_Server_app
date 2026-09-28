@@ -1,5 +1,6 @@
 package com.sliit.ayushada_server.modules.Prescription_and_Verification_Management.Dto;
 
+<<<<<<< Updated upstream
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,3 +24,7 @@ public class PrescriptionFulfillmentRequest {
         private BigDecimal unitPrice;
     }
 }
+=======
+public class PrescriptionFulfillmentRequest {
+}
+>>>>>>> Stashed changes

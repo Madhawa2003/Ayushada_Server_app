@@ -1,5 +1,6 @@
 package com.sliit.ayushada_server.modules.Prescription_and_Verification_Management;
 
+<<<<<<< Updated upstream
 import com.sliit.ayushada_server.Entity.CustomerOrder;
 import com.sliit.ayushada_server.Entity.Prescription;
 import com.sliit.ayushada_server.modules.Prescription_and_Verification_Management.Dto.CustomerApproveAndPayRequest;
@@ -77,3 +78,7 @@ public class PrescriptionController {
         return prescriptionService.advanceFulfillmentStatus(id, body.get("status"));
     }
 }
+=======
+public class PrescriptionController {
+}
+>>>>>>> Stashed changes
