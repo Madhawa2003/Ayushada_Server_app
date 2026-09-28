@@ -9,27 +9,27 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "order_item")
+@Table(name = "prescription_item")
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderItem {
+public class PrescriptionItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_item_id")
-    private Long orderItemId;
+    @Column(name = "item_id")
+    private Long itemId;
 
-    @Column(name = "quantity", nullable = false)
+    @Column(nullable = false)
     private Integer quantity;
 
-    @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
+    @Column(name = "unit_price", precision = 10, scale = 2, nullable = false)
     private BigDecimal unitPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "prescription_id", nullable = false)
     @JsonBackReference
-    private CustomerOrder customerOrder;
+    private Prescription prescription;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "medicine_id", nullable = false)

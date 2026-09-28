@@ -1,29 +1,25 @@
 package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "pay_type")
+@Getter
+@Setter
+@NoArgsConstructor
 public class PayType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "pay_type_id")
+    private Long payTypeId;
 
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "name", nullable = false, length = 50)
+    @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 
-    @Lob
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
-
-
 }

@@ -1,53 +1,53 @@
 package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "invoice")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Invoice {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "invoice_id")
+    private Long invoiceId;
 
-    @NotNull
-    @Column(name = "date", nullable = false)
-    private Instant date;
+    @Column(name = "invoice_number", unique = true, length = 50)
+    private String invoiceNumber;
 
-    @NotNull
+    @Column(name = "date")
+    private LocalDateTime date = LocalDateTime.now();
+
     @Column(name = "total", nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
 
-    @ColumnDefault("0.00")
     @Column(name = "discount", precision = 10, scale = 2)
-    private BigDecimal discount;
+    private BigDecimal discount = BigDecimal.ZERO;
 
-    @ColumnDefault("0.00")
     @Column(name = "tax", precision = 10, scale = 2)
-    private BigDecimal tax;
+    private BigDecimal tax = BigDecimal.ZERO;
 
-    @NotNull
+    @Column(name = "delivery_fee", precision = 10, scale = 2)
+    private BigDecimal deliveryFee = new BigDecimal("250.00");
+
     @Column(name = "net_total", nullable = false, precision = 10, scale = 2)
     private BigDecimal netTotal;
 
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "status", nullable = false, length = 50)
-    private String status;
+    @Column(name = "net_term", length = 50)
+    private String netTerm = "Immediate";
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private CustomerOrder order;
+    @Column(name = "status", length = 30)
+    private String status = "UNPAID";
 
-
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id", nullable = false)
+    private CustomerOrder customerOrder;
 }

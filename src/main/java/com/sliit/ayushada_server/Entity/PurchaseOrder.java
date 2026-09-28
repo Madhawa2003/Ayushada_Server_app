@@ -1,38 +1,47 @@
 package com.sliit.ayushada_server.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "purchase_order")
+@Getter
+@Setter
+@NoArgsConstructor
 public class PurchaseOrder {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
 
-    @NotNull
+    @Id
+    @Column(name = "po_id", length = 50)
+    private String poId;
+
     @Column(name = "order_date", nullable = false)
-    private Instant orderDate;
+    private LocalDate orderDate;
 
     @Column(name = "expected_date")
     private LocalDate expectedDate;
 
-    @Size(max = 50)
-    @Column(name = "status", length = 50)
-    private String status;
+    @Column(name = "status", length = 30)
+    private String status = "Sent";
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "supplier_id")
+    @Column(name = "note", columnDefinition = "TEXT")
+    private String note;
+
+    @Column(name = "total_amount", precision = 12, scale = 2)
+    private BigDecimal totalAmount = BigDecimal.ZERO;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
 
-
+    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<PurchaseOrderItem> items = new ArrayList<>();
 }

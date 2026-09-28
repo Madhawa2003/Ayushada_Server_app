@@ -1,44 +1,42 @@
 package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "payment")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Payment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "payment_id")
+    private Long paymentId;
 
-    @NotNull
-    @Column(name = "date", nullable = false)
-    private Instant date;
+    @Column(name = "payment_reference", unique = true, length = 100)
+    private String paymentReference;
 
-    @NotNull
+    @Column(name = "date")
+    private LocalDateTime date = LocalDateTime.now();
+
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "status", nullable = false, length = 50)
-    private String status;
+    @Column(name = "status", length = 30)
+    private String status = "SUCCESS";
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "invoice_id", nullable = false)
     private Invoice invoice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pay_type_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "pay_type_id", nullable = false)
     private PayType payType;
-
-
 }

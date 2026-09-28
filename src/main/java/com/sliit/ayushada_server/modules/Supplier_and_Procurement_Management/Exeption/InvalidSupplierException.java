@@ -5,12 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class InvalidSupplierException extends RuntimeException {
-
     public InvalidSupplierException(String message) {
         super(message);
-    }
-
-    public InvalidSupplierException(String message, Throwable cause) {
-        super(message, cause);
     }
 }

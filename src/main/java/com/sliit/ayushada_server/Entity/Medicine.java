@@ -1,55 +1,55 @@
 package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "medicine")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Medicine {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "medicine_id")
+    private Long medicineId;
 
-    @Size(max = 150)
-    @NotNull
     @Column(name = "name", nullable = false, length = 150)
     private String name;
 
-    @Size(max = 50)
+    @Column(name = "sinhala_name", length = 150)
+    private String sinhalaName;
+
     @Column(name = "type", length = 50)
     private String type;
 
-    @Lob
-    @Column(name = "description")
-    private String description;
-
-    @Lob
-    @Column(name = "instructions")
-    private String instructions;
-
-    @Size(max = 255)
-    @Column(name = "intake")
-    private String intake;
-
-    @NotNull
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Size(max = 255)
+    @Column(name = "intake", length = 255)
+    private String intake;
+
+    @Column(name = "instructions", columnDefinition = "TEXT")
+    private String instructions;
+
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
     @Column(name = "image_url")
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @Column(name = "prescription_required")
+    private Boolean prescriptionRequired = false;
+
+    @Column(name = "is_archived")
+    private Boolean isArchived = false;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
-
-
 }
