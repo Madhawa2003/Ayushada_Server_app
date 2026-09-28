@@ -1,78 +1,46 @@
 package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
-import java.util.Collection;
-import java.util.Objects;
-
+@Getter
+@Setter
 @Entity
+@Table(name = "supplier")
 public class Supplier {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
-    private int id;
-    @Basic
-    @Column(name = "name")
-    private String name;
-    @Basic
-    @Column(name = "isActive")
-    private Byte isActive;
-    @Basic
-    @Column(name = "description")
-    private String description;
-    @OneToMany(mappedBy = "supplier")
-    private Collection<SupplierLogs> supplierLogs;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
-    public int getId() {
-        return id;
-    }
+    @Size(max = 150)
+    @NotNull
+    @Column(name = "company_name", nullable = false, length = 150)
+    private String companyName;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    @Size(max = 100)
+    @Column(name = "person_name", length = 100)
+    private String personName;
 
-    public String getName() {
-        return name;
-    }
+    @Size(max = 100)
+    @Column(name = "email", length = 100)
+    private String email;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Size(max = 20)
+    @Column(name = "phone_no", length = 20)
+    private String phoneNo;
 
-    public Byte getIsActive() {
-        return isActive;
-    }
+    @Lob
+    @Column(name = "address")
+    private String address;
 
-    public void setIsActive(Byte isActive) {
-        this.isActive = isActive;
-    }
+    @ColumnDefault("1")
+    @Column(name = "active_status")
+    private Boolean activeStatus;
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Supplier supplier = (Supplier) o;
-        return id == supplier.id && Objects.equals(name, supplier.name) && Objects.equals(isActive, supplier.isActive) && Objects.equals(description, supplier.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, isActive, description);
-    }
-
-    public Collection<SupplierLogs> getSupplierLogs() {
-        return supplierLogs;
-    }
-
-    public void setSupplierLogs(Collection<SupplierLogs> supplierLogs) {
-        this.supplierLogs = supplierLogs;
-    }
 }
