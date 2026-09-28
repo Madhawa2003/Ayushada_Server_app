@@ -1,6 +1,5 @@
 package com.sliit.ayushada_server.modules.Prescription_and_Verification_Management;
 
-
 import com.sliit.ayushada_server.Entity.*;
 import com.sliit.ayushada_server.modules.Billing_Invoicing_And_Digital_Payments.Repository.InvoiceRepository;
 import com.sliit.ayushada_server.modules.Billing_Invoicing_And_Digital_Payments.Repository.PayTypeRepository;
@@ -190,4 +189,3 @@ public class PrescriptionService {
         return prescriptionRepository.save(rx);
     }
 }
-

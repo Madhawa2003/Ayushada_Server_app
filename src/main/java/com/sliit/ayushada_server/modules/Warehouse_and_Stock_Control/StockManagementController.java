@@ -1,12 +1,12 @@
-package com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management;
+package com.sliit.ayushada_server.modules.Warehouse_and_Stock_Control;
 
-import com.sliit.ayushada_server.Entity.Stock;
 import com.sliit.ayushada_server.modules.Warehouse_and_Stock_Control.Dto.StockAdjustRequest;
-import com.sliit.ayushada_server.modules.Warehouse_and_Stock_Control.StockManagementService;
+import com.sliit.ayushada_server.modules.Warehouse_and_Stock_Control.Dto.StockBatchDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/inventory_and_Stock_Management")
@@ -16,23 +16,32 @@ public class StockManagementController {
     @Autowired
     private StockManagementService stockService;
 
+
     @GetMapping("/batches")
-    public List<Stock> getAllBatches() {
+    public List<StockBatchDTO> getAllBatches() {
         return stockService.getAllBatches();
     }
 
     @PostMapping("/batches")
-    public Stock addBatch(@RequestBody Stock stock) {
-        return stockService.addBatch(stock);
+    public StockBatchDTO addBatch(@RequestBody Map<String, Object> body) {
+        Long medicineId = Long.valueOf(body.get("medicineId").toString());
+        String batchNumber = body.get("batchNumber").toString();
+        int quantity = Integer.parseInt(body.get("quantity").toString());
+        String expDate = body.get("expiryDate").toString();
+        String location = body.get("warehouseLocation").toString();
+
+        return stockService.addBatch(medicineId, batchNumber, quantity, expDate, location);
     }
 
+
     @PutMapping("/batches/{id}/reconcile")
-    public Stock reconcileStock(@PathVariable Long id, @RequestBody StockAdjustRequest req) {
+    public StockBatchDTO reconcileStock(@PathVariable Long id, @RequestBody StockAdjustRequest req) {
         return stockService.reconcileStock(id, req);
     }
 
+
     @PutMapping("/batches/{id}/write-off")
-    public Stock writeOffStock(@PathVariable Long id, @RequestBody StockAdjustRequest req) {
+    public StockBatchDTO writeOffStock(@PathVariable Long id, @RequestBody StockAdjustRequest req) {
         return stockService.writeOffStock(id, req);
     }
 }

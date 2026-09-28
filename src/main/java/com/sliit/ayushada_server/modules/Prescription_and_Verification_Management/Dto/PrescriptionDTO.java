@@ -1,6 +1,5 @@
 package com.sliit.ayushada_server.modules.Prescription_and_Verification_Management.Dto;
 
-<<<<<<< Updated upstream
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import java.math.BigDecimal;
@@ -34,7 +33,3 @@ public class PrescriptionDTO {
     private String verifiedByName;
     private LocalDateTime verifiedAt;
 }
-=======
-public class PrescriptionDTO {
-}
->>>>>>> Stashed changes

@@ -77,4 +77,3 @@ public class PrescriptionController {
         return prescriptionService.advanceFulfillmentStatus(id, body.get("status"));
     }
 }
-
