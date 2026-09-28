@@ -1,45 +1,46 @@
 package com.sliit.ayushada_server.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
-import java.math.BigDecimal;
-
-@Entity
-@Table(name = "supplier")
 @Getter
 @Setter
-@NoArgsConstructor
+@Entity
+@Table(name = "supplier")
 public class Supplier {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "supplier_id")
-    private Long supplierId;
+    @Column(name = "id", nullable = false)
+    private Long id;
 
+    @Size(max = 150)
+    @NotNull
     @Column(name = "company_name", nullable = false, length = 150)
     private String companyName;
 
+    @Size(max = 100)
     @Column(name = "person_name", length = 100)
     private String personName;
 
-    @Column(name = "phone_no", length = 20)
-    private String phoneNo;
-
+    @Size(max = 100)
     @Column(name = "email", length = 100)
     private String email;
 
-    @Column(name = "address", columnDefinition = "TEXT")
+    @Size(max = 20)
+    @Column(name = "phone_no", length = 20)
+    private String phoneNo;
+
+    @Lob
+    @Column(name = "address")
     private String address;
 
-    @Column(name = "supplied_herbs", length = 255)
-    private String suppliedHerbs;
-
-    @Column(name = "rating", precision = 2, scale = 1)
-    private BigDecimal rating = new BigDecimal("5.0");
-
+    @ColumnDefault("1")
     @Column(name = "active_status")
-    private Boolean activeStatus = true;
+    private Boolean activeStatus;
+
+
 }
