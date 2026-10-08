@@ -7,6 +7,8 @@ import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Dto
 import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Exeption.InvalidSupplierException;
 import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Repositories.PurchaseOrderRepository;
 import com.sliit.ayushada_server.modules.Supplier_and_Procurement_Management.Repositories.SupplierRepository;
+import com.sliit.ayushada_server.modules.Warehouse_and_Stock_Control.Repository.StockRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,6 +24,12 @@ public class SapmService {
 
     @Autowired
     private SupplierRepository supplierRepository;
+
+    @Autowired
+    public PurchaseOrderRepository purchaseOrderRepository;
+
+    @Autowired
+    public StockRepository stockRepository;
 
     @Autowired
     private PurchaseOrderRepository orderRepository;
@@ -107,5 +116,13 @@ public class SapmService {
                 .orElseThrow(() -> new InvalidSupplierException("Purchase Order not found: " + poId));
         po.setStatus("Delivered");
         return orderRepository.save(po);
+    }
+
+    @Transactional
+    public void deleteSupplier(Long id) {
+        Optional<Supplier>sup = supplierRepository.findById(id);
+        purchaseOrderRepository.deleteBySupplier(sup.get());
+        stockRepository.deleteBySupplier(sup.get());
+        supplierRepository.deleteById(id);
     }
 }

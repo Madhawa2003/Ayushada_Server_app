@@ -174,4 +174,13 @@ public class BillingService {
         invoice.setNetTerm("REFUNDED: " + reason);
         return invoiceRepository.save(invoice);
     }
+
+    @Transactional // <-- MUST be present here
+    public void deleteInvoice(Long id) {
+        // 1. Delete child payment records first
+        paymentRepository.deleteByInvoice_InvoiceId(id);
+
+        // 2. Delete parent invoice
+        invoiceRepository.deleteById(id);
+    }
 }

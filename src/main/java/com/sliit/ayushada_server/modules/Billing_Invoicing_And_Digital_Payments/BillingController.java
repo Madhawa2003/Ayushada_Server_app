@@ -26,6 +26,10 @@ public class BillingController {
     public ReceiptResponse processPayment(@RequestBody PaymentRequest req) {
         return billingService.processPayment(req);
     }
+    @DeleteMapping("/{id}")
+    public void deleteInvoice(@PathVariable Long id) {
+        billingService.deleteInvoice(id);
+    }
 
     @PutMapping("/invoices/{id}/refund")
     public Invoice processRefund(@PathVariable Long id, @RequestBody Map<String, String> body) {

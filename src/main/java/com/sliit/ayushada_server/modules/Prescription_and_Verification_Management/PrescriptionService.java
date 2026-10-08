@@ -188,4 +188,8 @@ public class PrescriptionService {
         rx.setStatus(status);
         return prescriptionRepository.save(rx);
     }
+
+    public void deletePrescription(Long id) {
+        prescriptionRepository.deleteById(id);
+    }
 }

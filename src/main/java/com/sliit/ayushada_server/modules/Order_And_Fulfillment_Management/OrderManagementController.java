@@ -30,6 +30,11 @@ public class OrderManagementController {
         return orderService.getCustomerOrders(customerId);
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteOrder(@PathVariable Long id) {
+        orderService.delete(id);
+    }
+
     @PutMapping("/orders/{id}/status")
     public CustomerOrder updateStatus(@PathVariable Long id, @RequestBody OrderStatusRequest req) {
         return orderService.updateStatus(id, req);

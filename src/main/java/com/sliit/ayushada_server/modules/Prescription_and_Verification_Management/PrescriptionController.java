@@ -77,4 +77,9 @@ public class PrescriptionController {
             @RequestBody Map<String, String> body) {
         return prescriptionService.advanceFulfillmentStatus(id, body.get("status"));
     }
+
+    @DeleteMapping("/{id}")
+    public void deletePrescription(@PathVariable Long id) {
+        prescriptionService.deletePrescription(id);
+    }
 }

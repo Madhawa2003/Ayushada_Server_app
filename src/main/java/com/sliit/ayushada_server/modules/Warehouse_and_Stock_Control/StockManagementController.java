@@ -39,6 +39,11 @@ public class StockManagementController {
         return stockService.reconcileStock(id, req);
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteStock(@PathVariable Long id) {
+        stockService.deleteStock(id);
+
+    }
 
     @PutMapping("/batches/{id}/write-off")
     public StockBatchDTO writeOffStock(@PathVariable Long id, @RequestBody StockAdjustRequest req) {

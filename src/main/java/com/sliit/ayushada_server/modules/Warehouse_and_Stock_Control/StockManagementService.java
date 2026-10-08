@@ -161,4 +161,8 @@ public class StockManagementService {
                 "HEALTHY"
         );
     }
+
+    public void deleteStock(Long id) {
+        stockRepository.deleteById(id);
+    }
 }

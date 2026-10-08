@@ -42,6 +42,10 @@ public class OrderManagementService {
         return orderRepository.findByCustomerUserIdOrderByOrderDateDesc(customerId);
     }
 
+    public void delete(Long id) {
+        orderRepository.deleteById(id);
+    }
+
     public CustomerOrder updateStatus(Long id, OrderStatusRequest req) {
         CustomerOrder order = orderRepository.findById(id)
                 .orElseThrow(() -> new InvalidOrderException("Order not found with ID: " + id));

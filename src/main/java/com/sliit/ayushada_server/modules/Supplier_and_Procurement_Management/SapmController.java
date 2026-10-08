@@ -52,4 +52,9 @@ public class SapmController {
     public PurchaseOrder markDelivered(@PathVariable String poId) {
         return sapmService.markDelivered(poId);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteSup(@PathVariable Long id) {
+        sapmService.deleteSupplier(id);
+    }
 }
