@@ -11,10 +11,13 @@ import com.sliit.ayushada_server.modules.Medicine_Catalog_and_Formulation_Manage
 import com.sliit.ayushada_server.modules.Warehouse_and_Stock_Control.Repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class MedicineCatalogService {
@@ -105,7 +108,12 @@ public class MedicineCatalogService {
     }
 
     // 4. Update existing medicine
+    @Transactional
     public AdminMedicineViewDTO updateMedicine(Long id, MedicineSaveRequest req) {
+        if (req.getInitialStock() < 0) {
+            throw new InvalidMedicineException("Stock cannot be negative.");
+        }
+
         Medicine med = medicineRepository.findById(id)
                 .orElseThrow(() -> new InvalidMedicineException("Medicine not found with ID: " + id));
 
@@ -119,8 +127,51 @@ public class MedicineCatalogService {
 
         Medicine saved = medicineRepository.save(med);
 
-        int stock = calculateStock(saved.getMedicineId());
+        int stock = setStockTotal(saved, req.getInitialStock());
         return new AdminMedicineViewDTO(saved.getMedicineId(), saved.getName(), category.getName(), saved.getPrice(), saved.getImageUrl(), saved.getPrescriptionRequired(), stock);
+    }
+
+    private int setStockTotal(Medicine medicine, int targetStock) {
+        List<Stock> stocks = stockRepository.findAllByOrderByExpDateAsc();
+        List<Stock> medicineStocks = stocks.stream()
+                .filter(stock -> stock.getMedicine() != null
+                        && Objects.equals(stock.getMedicine().getMedicineId(), medicine.getMedicineId()))
+                .toList();
+        int currentStock = medicineStocks.stream()
+                .mapToInt(stock -> stock.getQuantity() == null ? 0 : stock.getQuantity())
+                .sum();
+
+        if (targetStock > currentStock) {
+            Stock adjustment = new Stock();
+            adjustment.setBatchNumber("ADJ-" + UUID.randomUUID());
+            adjustment.setQuantity(targetStock - currentStock);
+            adjustment.setMfgDate(LocalDate.now());
+            adjustment.setExpDate(LocalDate.now().plusMonths(18));
+            adjustment.setWarehouseLocation("Bay A - Shelf 02");
+            adjustment.setNote("Catalog stock adjustment");
+            adjustment.setMedicine(medicine);
+            stockRepository.save(adjustment);
+        } else if (targetStock < currentStock) {
+            int remainingReduction = currentStock - targetStock;
+            for (Stock stock : medicineStocks) {
+                int batchQuantity = stock.getQuantity() == null ? 0 : stock.getQuantity();
+                int reduction = Math.min(batchQuantity, remainingReduction);
+                if (reduction > 0) {
+                    stock.setQuantity(batchQuantity - reduction);
+                    String note = stock.getNote();
+                    stock.setNote(note == null || note.isBlank()
+                            ? "RECONCILED: Catalog stock total adjustment"
+                            : note + "; RECONCILED: Catalog stock total adjustment");
+                    stockRepository.save(stock);
+                    remainingReduction -= reduction;
+                }
+                if (remainingReduction == 0) {
+                    break;
+                }
+            }
+        }
+
+        return targetStock;
     }
 
     // 5. Restock quick batch
