@@ -24,6 +24,7 @@ public class PrescriptionController {
         return prescriptionService.uploadPrescription(rx);
     }
 
+
     @PostMapping("/customer/upload")
     public Prescription uploadFromCustomer(@RequestBody PrescriptionUploadRequest request) {
         return prescriptionService.handleCustomerUpload(request);

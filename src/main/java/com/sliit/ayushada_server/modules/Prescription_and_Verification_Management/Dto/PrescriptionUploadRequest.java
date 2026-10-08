@@ -10,5 +10,5 @@ public class PrescriptionUploadRequest {
     private String fileType;
     private String fileBase64;
     private String customerNote;
-    private String userId; // Customer user_id (e.g. "USR-1006")
+    private String userId;
 }

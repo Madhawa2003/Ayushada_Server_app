@@ -1,8 +1,13 @@
 package com.sliit.ayushada_server.modules.User_Management;
 
+import com.sliit.ayushada_server.Entity.CustomerOrder;
 import com.sliit.ayushada_server.Entity.Role;
 import com.sliit.ayushada_server.Entity.User;
 import com.sliit.ayushada_server.common.JwtUtil;
+import com.sliit.ayushada_server.modules.Billing_Invoicing_And_Digital_Payments.Repository.InvoiceRepository;
+import com.sliit.ayushada_server.modules.Billing_Invoicing_And_Digital_Payments.Repository.PaymentRepository;
+import com.sliit.ayushada_server.modules.Order_And_Fulfillment_Management.Repository.OrderRepository;
+import com.sliit.ayushada_server.modules.Prescription_and_Verification_Management.Repository.PrescriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +24,15 @@ public class UserManagementService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private PrescriptionRepository prescriptionRepository;
+    @Autowired
+    private InvoiceRepository invoiceRepository;
+    @Autowired
+    private PaymentRepository paymentRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -28,9 +42,9 @@ public class UserManagementService {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+//    public List<User> getAllUsers() {
+//        return userRepository.findAll();
+//    }
 
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
@@ -73,12 +87,44 @@ public class UserManagementService {
     /**
      * Soft-deactivates the user to preserve order history and relational integrity.
      */
+
     public void deleteUser(String userId) {
         User existing = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        existing.setStatus("INACTIVE");
-        userRepository.save(existing);
+        // Step 1: Detach prescriptions from orders to prevent fk_order_prescription constraint violations
+        if (orderRepository != null) {
+            orderRepository.clearPrescriptionsByCustomer(existing);
+        }
+
+        // Step 2: Delete customer prescriptions
+        if (prescriptionRepository != null && prescriptionRepository.existsByCustomer(existing)) {
+            prescriptionRepository.deleteByCustomer(existing);
+        }
+
+        // Step 3: Delete financial records (payments -> invoices) before deleting orders
+        if (orderRepository != null) {
+            List<CustomerOrder> orders = orderRepository.findByCustomer(existing);
+            for (CustomerOrder order : orders) {
+                if (invoiceRepository != null) {
+                    invoiceRepository.findByCustomerOrder(order).ifPresent(invoice -> {
+                        if (paymentRepository != null) {
+                            paymentRepository.deleteByInvoice(invoice);
+                        }
+                        invoiceRepository.delete(invoice);
+                    });
+                }
+            }
+            // Step 4: Delete the customer orders
+            orderRepository.deleteAll(orders);
+        }
+
+        // Step 5: Delete user record
+        userRepository.delete(existing);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
 
